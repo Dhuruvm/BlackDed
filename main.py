@@ -19,7 +19,8 @@ import psutil
 
 # Initialize colorama for cross-platform colored output
 init(autoreset=True)
-console = Console()
+# Kali Linux-style black console with green theme
+console = Console(style="on black")
 
 class BlackDeD:
     def __init__(self):
@@ -32,29 +33,32 @@ class BlackDeD:
         os.system('clear' if os.name == 'posix' else 'cls')
         
     def print_banner(self):
-        """Display the awesome ASCII art banner"""
+        """Display the Kali Linux-style ASCII art banner with black background"""
         self.clear_screen()
         
-        # Create custom figlet font banner
+        # Set terminal background to black (Kali Linux style)
+        print(f"{Back.BLACK}{Fore.GREEN}", end="")
+        
+        # Create Kali Linux-style banner
         f = Figlet(font='slant')
         banner = f.renderText('BlackDeD')
         
-        # Print banner with gradient colors
+        # Print banner with Kali Linux green on black
         lines = banner.split('\n')
-        colors = [Fore.RED, Fore.YELLOW, Fore.GREEN, Fore.CYAN, Fore.BLUE, Fore.MAGENTA]
         
-        print()
-        for i, line in enumerate(lines):
-            color = colors[i % len(colors)]
-            print(f"{color}{Style.BRIGHT}{line}")
+        print(f"{Back.BLACK}")
+        for line in lines:
+            print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}{line}")
         
-        # Subtitle with styling
+        # Kali Linux-style subtitle with black background
         subtitle = f"""
-{Fore.WHITE}{Style.BRIGHT}═══════════════════════════════════════════════════════════════════════
-{Fore.CYAN}{Style.BRIGHT}    Advanced Ethical Hacking Toolkit for Security Professionals
-{Fore.GREEN}{Style.BRIGHT}              Version: {self.version} | Author: {self.author}
-{Fore.YELLOW}{Style.BRIGHT}                Optimized for Termux & Linux Environments
-{Fore.WHITE}{Style.BRIGHT}═══════════════════════════════════════════════════════════════════════
+{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}┌─────────────────────────────────────────────────────────────────────────────┐
+{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}│                 Advanced Ethical Hacking Toolkit                           │
+{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}│                    for Security Professionals                              │
+{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}├─────────────────────────────────────────────────────────────────────────────┤
+{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}│  Version: {self.version:<10} │  Author: {self.author:<25}  │
+{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}│  Optimized for Termux & Linux Environments                                 │
+{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}└─────────────────────────────────────────────────────────────────────────────┘
 """
         print(subtitle)
         
@@ -73,18 +77,19 @@ class BlackDeD:
             "Available Memory": f"{round(psutil.virtual_memory().available / (1024**3), 2)} GB"
         }
         
-        # Create table for system info
-        table = Table(show_header=False, show_lines=True, border_style="bright_cyan")
-        table.add_column("Property", style="bright_yellow", justify="right")
-        table.add_column("Value", style="bright_green")
+        # Create Kali Linux-style table for system info
+        table = Table(show_header=False, show_lines=True, border_style="green on black")
+        table.add_column("Property", style="green on black", justify="right")
+        table.add_column("Value", style="bright_green on black")
         
         for key, value in system_info.items():
             table.add_row(key, value)
         
         panel = Panel(
             table,
-            title="[bright_red]⚡ System Information ⚡[/bright_red]",
-            border_style="bright_red",
+            title="[green on black]⚡ System Information ⚡[/green on black]",
+            border_style="green on black",
+            style="on black",
             padding=(1, 2)
         )
         
@@ -106,20 +111,21 @@ class BlackDeD:
             ("0", "❌ Exit BlackDeD", "Close the application safely")
         ]
         
-        # Create main menu table
-        table = Table(show_header=True, header_style="bold bright_red", border_style="bright_cyan")
-        table.add_column("Option", style="bright_yellow", justify="center", width=8)
-        table.add_column("Module", style="bright_green", width=35)
-        table.add_column("Description", style="bright_white", width=45)
+        # Create Kali Linux-style main menu table
+        table = Table(show_header=True, header_style="bold green on black", border_style="green on black", style="on black")
+        table.add_column("Option", style="bright_green on black", justify="center", width=8)
+        table.add_column("Module", style="green on black", width=35)
+        table.add_column("Description", style="white on black", width=45)
         
         for option, module, description in menu_options:
             table.add_row(option, module, description)
         
         panel = Panel(
             table,
-            title="[bright_red]⚔️  BLACKDED MAIN MENU ⚔️[/bright_red]",
-            subtitle="[bright_yellow]Select an option to continue[/bright_yellow]",
-            border_style="bright_red",
+            title="[green on black]⚔️  BLACKDED MAIN MENU ⚔️[/green on black]",
+            subtitle="[green on black]root@blackded:~# Select an option to continue[/green on black]",
+            border_style="green on black",
+            style="on black",
             padding=(1, 2)
         )
         
@@ -157,25 +163,26 @@ By continuing, you acknowledge that you will use this tool ethically and legally
         """
         
         panel = Panel(
-            Text(warning_text, style="bright_yellow"),
-            title="[bright_red]⚠️  ETHICAL USAGE WARNING ⚠️[/bright_red]",
-            border_style="bright_red",
+            Text(warning_text, style="bright_yellow on black"),
+            title="[red on black]⚠️  ETHICAL USAGE WARNING ⚠️[/red on black]",
+            border_style="red on black",
+            style="on black",
             padding=(1, 2)
         )
         
         console.print(panel)
         
-        # Require user acknowledgment
+        # Require user acknowledgment (Kali Linux style)
         while True:
-            response = input(f"\n{Fore.YELLOW}{Style.BRIGHT}Do you agree to use this tool ethically and legally? (yes/no): ").lower().strip()
+            response = input(f"\n{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}root@blackded:~# Do you agree to use this tool ethically and legally? (yes/no): ").lower().strip()
             if response in ['yes', 'y']:
-                print(f"{Fore.GREEN}{Style.BRIGHT}✓ Ethical usage acknowledged. Proceeding...")
+                print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}[+] Ethical usage acknowledged. Initializing BlackDeD...")
                 break
             elif response in ['no', 'n']:
-                print(f"{Fore.RED}{Style.BRIGHT}Access denied. Exiting BlackDeD.")
+                print(f"{Back.BLACK}{Fore.RED}{Style.BRIGHT}[-] Access denied. Exiting BlackDeD.")
                 sys.exit(0)
             else:
-                print(f"{Fore.RED}Please enter 'yes' or 'no'")
+                print(f"{Back.BLACK}{Fore.RED}[!] Please enter 'yes' or 'no'")
         
         time.sleep(1)
         
@@ -207,9 +214,16 @@ By continuing, you acknowledge that you will use this tool ethically and legally
     
     def network_scanning_menu(self):
         """Network scanning tools submenu"""
-        print(f"{Fore.CYAN}{Style.BRIGHT}\n🌐 Network Scanning & Discovery Module")
-        print(f"{Fore.YELLOW}Coming soon in the next update!")
-        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        try:
+            from network_scanner import NetworkScanner
+            scanner = NetworkScanner()
+            scanner.show_menu()
+        except ImportError as e:
+            print(f"{Fore.RED}{Style.BRIGHT}❌ Network scanner module not available: {e}")
+            input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        except Exception as e:
+            print(f"{Fore.RED}{Style.BRIGHT}❌ Error loading network scanner: {e}")
+            input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
         
     def web_security_menu(self):
         """Web application security tools submenu"""
@@ -294,14 +308,14 @@ By continuing, you acknowledge that you will use this tool ethically and legally
             self.show_main_menu()
             
             try:
-                choice = input(f"\n{Fore.YELLOW}{Style.BRIGHT}BlackDeD> ").strip()
+                choice = input(f"\n{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}root@blackded:~# ").strip()
                 self.handle_menu_selection(choice)
             except KeyboardInterrupt:
-                print(f"\n{Fore.RED}{Style.BRIGHT}Ctrl+C detected. Exiting...")
+                print(f"\n{Back.BLACK}{Fore.RED}{Style.BRIGHT}[-] Ctrl+C detected. Exiting BlackDeD...")
                 self.exit_application()
             except Exception as e:
-                print(f"{Fore.RED}{Style.BRIGHT}Error: {str(e)}")
-                input(f"{Fore.WHITE}Press Enter to continue...")
+                print(f"{Back.BLACK}{Fore.RED}{Style.BRIGHT}[!] Error: {str(e)}")
+                input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to continue...")
 
 def main():
     """Main entry point"""
