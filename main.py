@@ -1,0 +1,323 @@
+#!/usr/bin/env python3
+"""
+BlackDeD - Advanced Ethical Hacking Toolkit
+Designed for Security Professionals and Penetration Testers
+Optimized for Termux and Linux environments
+"""
+
+import os
+import sys
+import time
+import platform
+from colorama import init, Fore, Back, Style
+from pyfiglet import Figlet
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+from rich.text import Text
+import psutil
+
+# Initialize colorama for cross-platform colored output
+init(autoreset=True)
+console = Console()
+
+class BlackDeD:
+    def __init__(self):
+        self.version = "1.0.0"
+        self.author = "BlackDeD Security Team"
+        self.clear_screen()
+        
+    def clear_screen(self):
+        """Clear the terminal screen"""
+        os.system('clear' if os.name == 'posix' else 'cls')
+        
+    def print_banner(self):
+        """Display the awesome ASCII art banner"""
+        self.clear_screen()
+        
+        # Create custom figlet font banner
+        f = Figlet(font='slant')
+        banner = f.renderText('BlackDeD')
+        
+        # Print banner with gradient colors
+        lines = banner.split('\n')
+        colors = [Fore.RED, Fore.YELLOW, Fore.GREEN, Fore.CYAN, Fore.BLUE, Fore.MAGENTA]
+        
+        print()
+        for i, line in enumerate(lines):
+            color = colors[i % len(colors)]
+            print(f"{color}{Style.BRIGHT}{line}")
+        
+        # Subtitle with styling
+        subtitle = f"""
+{Fore.WHITE}{Style.BRIGHT}═══════════════════════════════════════════════════════════════════════
+{Fore.CYAN}{Style.BRIGHT}    Advanced Ethical Hacking Toolkit for Security Professionals
+{Fore.GREEN}{Style.BRIGHT}              Version: {self.version} | Author: {self.author}
+{Fore.YELLOW}{Style.BRIGHT}                Optimized for Termux & Linux Environments
+{Fore.WHITE}{Style.BRIGHT}═══════════════════════════════════════════════════════════════════════
+"""
+        print(subtitle)
+        
+        # System information panel
+        self.show_system_info()
+        
+    def show_system_info(self):
+        """Display system information in a styled panel"""
+        # Get system information
+        system_info = {
+            "OS": platform.system() + " " + platform.release(),
+            "Architecture": platform.architecture()[0],
+            "Python Version": platform.python_version(),
+            "CPU Count": str(os.cpu_count()),
+            "Memory": f"{round(psutil.virtual_memory().total / (1024**3), 2)} GB",
+            "Available Memory": f"{round(psutil.virtual_memory().available / (1024**3), 2)} GB"
+        }
+        
+        # Create table for system info
+        table = Table(show_header=False, show_lines=True, border_style="bright_cyan")
+        table.add_column("Property", style="bright_yellow", justify="right")
+        table.add_column("Value", style="bright_green")
+        
+        for key, value in system_info.items():
+            table.add_row(key, value)
+        
+        panel = Panel(
+            table,
+            title="[bright_red]⚡ System Information ⚡[/bright_red]",
+            border_style="bright_red",
+            padding=(1, 2)
+        )
+        
+        console.print(panel)
+        print()
+        
+    def show_main_menu(self):
+        """Display the main menu with all available tools"""
+        menu_options = [
+            ("1", "🌐 Network Scanning & Discovery", "Port scanning, network mapping, service detection"),
+            ("2", "🕸️  Web Application Security", "SQL injection, XSS detection, directory bruteforce"),
+            ("3", "📡 Wireless Security Tools", "WiFi scanning, WPS testing, network analysis"),
+            ("4", "🎭 Social Engineering Toolkit", "OSINT gathering, email harvesting, phone validation"),
+            ("5", "🔒 Cryptography & Password Tools", "Hash cracking, encryption, password generation"),
+            ("6", "💻 System Information Gathering", "OS detection, service enumeration, system profiling"),
+            ("7", "🔍 Advanced Reconnaissance", "Domain analysis, subdomain discovery, DNS enumeration"),
+            ("8", "🛡️  Security Assessment Tools", "Vulnerability scanning, exploit verification"),
+            ("9", "⚙️  Configuration & Settings", "Tool configuration, API keys, advanced options"),
+            ("0", "❌ Exit BlackDeD", "Close the application safely")
+        ]
+        
+        # Create main menu table
+        table = Table(show_header=True, header_style="bold bright_red", border_style="bright_cyan")
+        table.add_column("Option", style="bright_yellow", justify="center", width=8)
+        table.add_column("Module", style="bright_green", width=35)
+        table.add_column("Description", style="bright_white", width=45)
+        
+        for option, module, description in menu_options:
+            table.add_row(option, module, description)
+        
+        panel = Panel(
+            table,
+            title="[bright_red]⚔️  BLACKDED MAIN MENU ⚔️[/bright_red]",
+            subtitle="[bright_yellow]Select an option to continue[/bright_yellow]",
+            border_style="bright_red",
+            padding=(1, 2)
+        )
+        
+        console.print(panel)
+        
+    def show_loading_animation(self, text="Loading", duration=2):
+        """Show a loading animation with custom text"""
+        chars = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
+        end_time = time.time() + duration
+        
+        while time.time() < end_time:
+            for char in chars:
+                sys.stdout.write(f"\r{Fore.CYAN}{Style.BRIGHT}{char} {text}...")
+                sys.stdout.flush()
+                time.sleep(0.1)
+        
+        sys.stdout.write(f"\r{Fore.GREEN}{Style.BRIGHT}✓ {text} Complete!   \n")
+        
+    def display_warning(self):
+        """Display ethical usage warning"""
+        warning_text = """
+⚠️  LEGAL DISCLAIMER & ETHICAL USAGE WARNING ⚠️
+
+This tool is designed for:
+• Authorized penetration testing
+• Security research and education  
+• Testing your own networks and systems
+• Legitimate security assessments
+
+UNAUTHORIZED ACCESS TO COMPUTER SYSTEMS IS ILLEGAL!
+The developers are not responsible for misuse of this tool.
+Only use on systems you own or have explicit permission to test.
+
+By continuing, you acknowledge that you will use this tool ethically and legally.
+        """
+        
+        panel = Panel(
+            Text(warning_text, style="bright_yellow"),
+            title="[bright_red]⚠️  ETHICAL USAGE WARNING ⚠️[/bright_red]",
+            border_style="bright_red",
+            padding=(1, 2)
+        )
+        
+        console.print(panel)
+        
+        # Require user acknowledgment
+        while True:
+            response = input(f"\n{Fore.YELLOW}{Style.BRIGHT}Do you agree to use this tool ethically and legally? (yes/no): ").lower().strip()
+            if response in ['yes', 'y']:
+                print(f"{Fore.GREEN}{Style.BRIGHT}✓ Ethical usage acknowledged. Proceeding...")
+                break
+            elif response in ['no', 'n']:
+                print(f"{Fore.RED}{Style.BRIGHT}Access denied. Exiting BlackDeD.")
+                sys.exit(0)
+            else:
+                print(f"{Fore.RED}Please enter 'yes' or 'no'")
+        
+        time.sleep(1)
+        
+    def handle_menu_selection(self, choice):
+        """Handle user menu selection"""
+        if choice == "1":
+            self.network_scanning_menu()
+        elif choice == "2":
+            self.web_security_menu()
+        elif choice == "3":
+            self.wireless_security_menu()
+        elif choice == "4":
+            self.social_engineering_menu()
+        elif choice == "5":
+            self.crypto_tools_menu()
+        elif choice == "6":
+            self.system_info_menu()
+        elif choice == "7":
+            self.reconnaissance_menu()
+        elif choice == "8":
+            self.security_assessment_menu()
+        elif choice == "9":
+            self.settings_menu()
+        elif choice == "0":
+            self.exit_application()
+        else:
+            print(f"{Fore.RED}{Style.BRIGHT}Invalid option! Please select a valid menu option.")
+            time.sleep(1)
+    
+    def network_scanning_menu(self):
+        """Network scanning tools submenu"""
+        print(f"{Fore.CYAN}{Style.BRIGHT}\n🌐 Network Scanning & Discovery Module")
+        print(f"{Fore.YELLOW}Coming soon in the next update!")
+        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        
+    def web_security_menu(self):
+        """Web application security tools submenu"""
+        print(f"{Fore.CYAN}{Style.BRIGHT}\n🕸️ Web Application Security Module")
+        print(f"{Fore.YELLOW}Coming soon in the next update!")
+        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        
+    def wireless_security_menu(self):
+        """Wireless security tools submenu"""
+        print(f"{Fore.CYAN}{Style.BRIGHT}\n📡 Wireless Security Tools Module")
+        print(f"{Fore.YELLOW}Coming soon in the next update!")
+        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        
+    def social_engineering_menu(self):
+        """Social engineering tools submenu"""
+        print(f"{Fore.CYAN}{Style.BRIGHT}\n🎭 Social Engineering Toolkit Module")
+        print(f"{Fore.YELLOW}Coming soon in the next update!")
+        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        
+    def crypto_tools_menu(self):
+        """Cryptography and password tools submenu"""
+        print(f"{Fore.CYAN}{Style.BRIGHT}\n🔒 Cryptography & Password Tools Module")
+        print(f"{Fore.YELLOW}Coming soon in the next update!")
+        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        
+    def system_info_menu(self):
+        """System information gathering submenu"""
+        print(f"{Fore.CYAN}{Style.BRIGHT}\n💻 System Information Gathering Module")
+        print(f"{Fore.YELLOW}Coming soon in the next update!")
+        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        
+    def reconnaissance_menu(self):
+        """Advanced reconnaissance submenu"""
+        print(f"{Fore.CYAN}{Style.BRIGHT}\n🔍 Advanced Reconnaissance Module")
+        print(f"{Fore.YELLOW}Coming soon in the next update!")
+        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        
+    def security_assessment_menu(self):
+        """Security assessment tools submenu"""
+        print(f"{Fore.CYAN}{Style.BRIGHT}\n🛡️ Security Assessment Tools Module")
+        print(f"{Fore.YELLOW}Coming soon in the next update!")
+        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        
+    def settings_menu(self):
+        """Settings and configuration submenu"""
+        print(f"{Fore.CYAN}{Style.BRIGHT}\n⚙️ Configuration & Settings Module")
+        print(f"{Fore.YELLOW}Coming soon in the next update!")
+        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        
+    def exit_application(self):
+        """Exit the application gracefully"""
+        self.clear_screen()
+        
+        exit_banner = f"""
+{Fore.RED}{Style.BRIGHT}
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║  {Fore.YELLOW}{Style.BRIGHT}Thank you for using BlackDeD Ethical Hacking Toolkit!{Fore.RED}{Style.BRIGHT}        ║
+║                                                                  ║
+║  {Fore.GREEN}{Style.BRIGHT}Remember: Use your skills responsibly and ethically{Fore.RED}{Style.BRIGHT}            ║
+║  {Fore.CYAN}{Style.BRIGHT}Stay updated with the latest security practices{Fore.RED}{Style.BRIGHT}                ║
+║                                                                  ║
+║  {Fore.MAGENTA}{Style.BRIGHT}Visit our GitHub for updates and new modules{Fore.RED}{Style.BRIGHT}                 ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+"""
+        print(exit_banner)
+        print(f"{Fore.WHITE}{Style.BRIGHT}Goodbye! 👋")
+        sys.exit(0)
+        
+    def run(self):
+        """Main application loop"""
+        # Show warning first
+        self.display_warning()
+        
+        # Show loading animation
+        self.show_loading_animation("Initializing BlackDeD", 3)
+        
+        # Main loop
+        while True:
+            self.print_banner()
+            self.show_main_menu()
+            
+            try:
+                choice = input(f"\n{Fore.YELLOW}{Style.BRIGHT}BlackDeD> ").strip()
+                self.handle_menu_selection(choice)
+            except KeyboardInterrupt:
+                print(f"\n{Fore.RED}{Style.BRIGHT}Ctrl+C detected. Exiting...")
+                self.exit_application()
+            except Exception as e:
+                print(f"{Fore.RED}{Style.BRIGHT}Error: {str(e)}")
+                input(f"{Fore.WHITE}Press Enter to continue...")
+
+def main():
+    """Main entry point"""
+    try:
+        # Check if running on compatible system
+        if platform.system() not in ['Linux', 'Darwin']:
+            print(f"{Fore.YELLOW}{Style.BRIGHT}Warning: BlackDeD is optimized for Linux/Termux environments.")
+            print(f"{Fore.YELLOW}Some features may not work correctly on {platform.system()}.")
+            
+        # Initialize and run BlackDeD
+        app = BlackDeD()
+        app.run()
+        
+    except Exception as e:
+        print(f"{Fore.RED}{Style.BRIGHT}Critical Error: {str(e)}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
