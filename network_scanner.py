@@ -4,6 +4,7 @@ BlackDeD Network Scanner Module
 Advanced network discovery and port scanning tools
 """
 
+import os
 import socket
 import threading
 import subprocess
@@ -12,7 +13,7 @@ import ipaddress
 import json
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
-from colorama import Fore, Style
+from colorama import Fore, Back, Style
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
@@ -74,7 +75,11 @@ class NetworkScanner:
         """Ping a single host to check if it's alive"""
         try:
             # Use ping command (cross-platform)
-            cmd = ['ping', '-c', '1', '-W', '1000', host] if 'linux' in str(psutil.LINUX).lower() else ['ping', '-n', '1', '-w', '1000', host]
+            import platform
+            if platform.system().lower() == 'linux' or os.name == 'posix':
+                cmd = ['ping', '-c', '1', '-W', '1000', host]  # Linux/Unix
+            else:
+                cmd = ['ping', '-n', '1', '-w', '1000', host]  # Windows
             result = subprocess.run(cmd, capture_output=True, timeout=2)
             return result.returncode == 0
         except Exception:
@@ -231,15 +236,15 @@ class NetworkScanner:
             if proceed != 'y':
                 return
         
-        # Scan options
-        print(f"\n{Fore.GREEN}Scan Options:")
-        print(f"{Fore.YELLOW}1. Quick Scan (Common Ports)")
-        print(f"{Fore.YELLOW}2. Full Scan (1-65535)")
-        print(f"{Fore.YELLOW}3. Custom Port Range")
-        print(f"{Fore.YELLOW}4. Specific Ports")
+        # Scan options (Kali Linux style)
+        print(f"\n{Back.BLACK}{Fore.GREEN}[*] Scan Options:")
+        print(f"{Back.BLACK}{Fore.GREEN}1. Quick Scan (Common Ports)")
+        print(f"{Back.BLACK}{Fore.GREEN}2. Full Scan (1-65535)")
+        print(f"{Back.BLACK}{Fore.GREEN}3. Custom Port Range")
+        print(f"{Back.BLACK}{Fore.GREEN}4. Specific Ports")
         
         try:
-            scan_type = input(f"\n{Fore.CYAN}Select scan type (1-4): ").strip()
+            scan_type = input(f"\n{Back.BLACK}{Fore.GREEN}root@blackded:~# Select scan type (1-4): ").strip()
         except KeyboardInterrupt:
             return
         
@@ -251,28 +256,28 @@ class NetworkScanner:
             ports_to_scan = list(range(1, 65536))
         elif scan_type == "3":
             try:
-                start_port = int(input(f"{Fore.YELLOW}Start port: "))
-                end_port = int(input(f"{Fore.YELLOW}End port: "))
+                start_port = int(input(f"{Back.BLACK}{Fore.GREEN}Start port: "))
+                end_port = int(input(f"{Back.BLACK}{Fore.GREEN}End port: "))
                 ports_to_scan = list(range(start_port, end_port + 1))
             except ValueError:
-                console.print(f"{Fore.RED}❌ Invalid port range!")
+                console.print(f"{Back.BLACK}{Fore.RED}[-] Invalid port range!")
                 return
         elif scan_type == "4":
             try:
-                ports_input = input(f"{Fore.YELLOW}Enter ports (comma-separated): ")
+                ports_input = input(f"{Back.BLACK}{Fore.GREEN}Enter ports (comma-separated): ")
                 ports_to_scan = [int(p.strip()) for p in ports_input.split(',')]
             except ValueError:
-                console.print(f"{Fore.RED}❌ Invalid port list!")
+                console.print(f"{Back.BLACK}{Fore.RED}[-] Invalid port list!")
                 return
         else:
-            console.print(f"{Fore.RED}❌ Invalid scan type!")
+            console.print(f"{Back.BLACK}{Fore.RED}[-] Invalid scan type!")
             return
         
         # Perform scan
         open_ports = []
         total_ports = len(ports_to_scan)
         
-        console.print(f"\n{Fore.GREEN}🎯 Scanning {total_ports} ports on {target_host}")
+        console.print(f"\n{Back.BLACK}{Fore.GREEN}[+] Scanning {total_ports} ports on {target_host}")
         
         with Progress() as progress:
             task = progress.add_task(f"[cyan]Scanning ports...", total=total_ports)
@@ -293,11 +298,11 @@ class NetworkScanner:
         
         # Display results
         if open_ports:
-            results_table = Table(show_header=True, header_style="bold bright_green")
-            results_table.add_column("Port", style="bright_yellow", justify="center")
-            results_table.add_column("Service", style="bright_cyan")
-            results_table.add_column("State", style="bright_green")
-            results_table.add_column("Banner", style="bright_white")
+            results_table = Table(show_header=True, header_style="bold green on black", style="on black")
+            results_table.add_column("Port", style="green on black", justify="center")
+            results_table.add_column("Service", style="bright_green on black")
+            results_table.add_column("State", style="green on black")
+            results_table.add_column("Banner", style="white on black")
             
             for port_info in open_ports:
                 results_table.add_row(
@@ -307,34 +312,34 @@ class NetworkScanner:
                     port_info['banner'][:50] + "..." if len(port_info['banner']) > 50 else port_info['banner']
                 )
             
-            panel = Panel(results_table, title=f"[bright_green]Port Scan Results for {target_host} ({len(open_ports)} open ports)[/bright_green]", border_style="green")
+            panel = Panel(results_table, title=f"[green on black]Port Scan Results for {target_host} ({len(open_ports)} open ports)[/green on black]", border_style="green on black", style="on black")
             console.print(panel)
             
             # Save results
             self.save_scan_results(target_host, open_ports)
         else:
-            console.print(f"{Fore.YELLOW}⚠️ No open ports found on {target_host}")
+            console.print(f"{Back.BLACK}{Fore.YELLOW}[!] No open ports found on {target_host}")
     
     def nmap_scanner(self):
         """Advanced Nmap scanner"""
-        console.print(f"\n{Fore.CYAN}{Style.BRIGHT}🛡️ Advanced Nmap Scanner")
-        console.print("=" * 60)
+        console.print(f"\n{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}🛡️ Advanced Nmap Scanner")
+        console.print(f"{Back.BLACK}{Fore.GREEN}" + "=" * 60)
         
-        target = input(f"{Fore.YELLOW}Enter target (IP/hostname/range): ").strip()
+        target = input(f"{Back.BLACK}{Fore.GREEN}root@blackded:~# Enter target (IP/hostname/range): ").strip()
         if not target:
-            console.print(f"{Fore.RED}❌ No target specified!")
+            console.print(f"{Back.BLACK}{Fore.RED}[-] No target specified!")
             return
         
-        # Scan options
-        print(f"\n{Fore.GREEN}Nmap Scan Types:")
-        print(f"{Fore.YELLOW}1. TCP SYN Scan (-sS)")
-        print(f"{Fore.YELLOW}2. TCP Connect Scan (-sT)")
-        print(f"{Fore.YELLOW}3. UDP Scan (-sU)")
-        print(f"{Fore.YELLOW}4. Comprehensive Scan (-sS -sV -O)")
-        print(f"{Fore.YELLOW}5. Stealth Scan (-sS -f -D RND:10)")
+        # Scan options (Kali Linux style)
+        print(f"\n{Back.BLACK}{Fore.GREEN}[*] Nmap Scan Types:")
+        print(f"{Back.BLACK}{Fore.GREEN}1. TCP SYN Scan (-sS)")
+        print(f"{Back.BLACK}{Fore.GREEN}2. TCP Connect Scan (-sT)")
+        print(f"{Back.BLACK}{Fore.GREEN}3. UDP Scan (-sU)")
+        print(f"{Back.BLACK}{Fore.GREEN}4. Comprehensive Scan (-sS -sV -O)")
+        print(f"{Back.BLACK}{Fore.GREEN}5. Stealth Scan (-sS -f -D RND:10)")
         
         try:
-            scan_type = input(f"\n{Fore.CYAN}Select scan type (1-5): ").strip()
+            scan_type = input(f"\n{Back.BLACK}{Fore.GREEN}root@blackded:~# Select scan type (1-5): ").strip()
         except KeyboardInterrupt:
             return
         
@@ -353,31 +358,31 @@ class NetworkScanner:
         elif scan_type == "5":
             arguments = "-sS -f -D RND:10"
         else:
-            console.print(f"{Fore.RED}❌ Invalid scan type!")
+            console.print(f"{Back.BLACK}{Fore.RED}[-] Invalid scan type!")
             return
         
         try:
-            console.print(f"\n{Fore.GREEN}🎯 Running Nmap scan: nmap {arguments} {target}")
-            console.print(f"{Fore.YELLOW}⏳ This may take a while...")
+            console.print(f"\n{Back.BLACK}{Fore.GREEN}[+] Running Nmap scan: nmap {arguments} {target}")
+            console.print(f"{Back.BLACK}{Fore.GREEN}[*] This may take a while...")
             
             # Run scan
             nm.scan(target, arguments=arguments)
             
             # Display results
             for host in nm.all_hosts():
-                console.print(f"\n{Fore.CYAN}📡 Host: {host} ({nm[host].hostname()})")
-                console.print(f"{Fore.GREEN}State: {nm[host].state()}")
+                console.print(f"\n{Back.BLACK}{Fore.GREEN}[+] Host: {host} ({nm[host].hostname()})")
+                console.print(f"{Back.BLACK}{Fore.GREEN}State: {nm[host].state()}")
                 
                 # Protocol info
                 for protocol in nm[host].all_protocols():
                     ports = nm[host][protocol].keys()
                     
                     if ports:
-                        port_table = Table(show_header=True, header_style="bold bright_green")
-                        port_table.add_column("Port", style="bright_yellow", justify="center")
-                        port_table.add_column("State", style="bright_green")
-                        port_table.add_column("Service", style="bright_cyan")
-                        port_table.add_column("Version", style="bright_white")
+                        port_table = Table(show_header=True, header_style="bold green on black", style="on black")
+                        port_table.add_column("Port", style="green on black", justify="center")
+                        port_table.add_column("State", style="bright_green on black")
+                        port_table.add_column("Service", style="green on black")
+                        port_table.add_column("Version", style="white on black")
                         
                         for port in ports:
                             port_info = nm[host][protocol][port]
@@ -388,29 +393,29 @@ class NetworkScanner:
                                 port_info.get('version', 'N/A')
                             )
                         
-                        panel = Panel(port_table, title=f"[bright_green]{protocol.upper()} Ports[/bright_green]", border_style="green")
+                        panel = Panel(port_table, title=f"[green on black]{protocol.upper()} Ports[/green on black]", border_style="green on black", style="on black")
                         console.print(panel)
                 
                 # OS Detection if available
                 if 'osclass' in nm[host]:
-                    console.print(f"{Fore.MAGENTA}🖥️ OS Detection:")
+                    console.print(f"{Back.BLACK}{Fore.GREEN}[+] OS Detection:")
                     for osclass in nm[host]['osclass']:
-                        console.print(f"  {osclass['osfamily']} {osclass.get('osgen', '')} ({osclass['accuracy']}% accuracy)")
+                        console.print(f"{Back.BLACK}{Fore.GREEN}  {osclass['osfamily']} {osclass.get('osgen', '')} ({osclass['accuracy']}% accuracy)")
                         
         except Exception as e:
-            console.print(f"{Fore.RED}❌ Nmap scan failed: {str(e)}")
+            console.print(f"{Back.BLACK}{Fore.RED}[-] Nmap scan failed: {str(e)}")
     
     def vulnerability_scanner(self):
         """Basic vulnerability scanning"""
-        console.print(f"\n{Fore.CYAN}{Style.BRIGHT}🔍 Vulnerability Scanner")
-        console.print("=" * 60)
+        console.print(f"\n{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}🔍 Vulnerability Scanner")
+        console.print(f"{Back.BLACK}{Fore.GREEN}" + "=" * 60)
         
-        target = input(f"{Fore.YELLOW}Enter target host: ").strip()
+        target = input(f"{Back.BLACK}{Fore.GREEN}root@blackded:~# Enter target host: ").strip()
         if not target:
-            console.print(f"{Fore.RED}❌ No target specified!")
+            console.print(f"{Back.BLACK}{Fore.RED}[-] No target specified!")
             return
         
-        console.print(f"{Fore.GREEN}🎯 Scanning {target} for common vulnerabilities...")
+        console.print(f"{Back.BLACK}{Fore.GREEN}[+] Scanning {target} for common vulnerabilities...")
         
         # Check for common vulnerabilities
         vulnerabilities = []
@@ -463,10 +468,10 @@ class NetworkScanner:
         
         # Display results
         if vulnerabilities:
-            vuln_table = Table(show_header=True, header_style="bold bright_red")
-            vuln_table.add_column("Service", style="bright_yellow")
-            vuln_table.add_column("Risk Level", style="bright_red")
-            vuln_table.add_column("Description", style="bright_white")
+            vuln_table = Table(show_header=True, header_style="bold red on black", style="on black")
+            vuln_table.add_column("Service", style="green on black")
+            vuln_table.add_column("Risk Level", style="red on black")
+            vuln_table.add_column("Description", style="white on black")
             
             for vuln in vulnerabilities:
                 risk_color = "bright_red" if vuln['risk'] == 'HIGH' else "bright_yellow" if vuln['risk'] == 'MEDIUM' else "bright_green"
@@ -476,10 +481,10 @@ class NetworkScanner:
                     vuln['description']
                 )
             
-            panel = Panel(vuln_table, title=f"[bright_red]Vulnerability Scan Results for {target}[/bright_red]", border_style="red")
+            panel = Panel(vuln_table, title=f"[red on black]Vulnerability Scan Results for {target}[/red on black]", border_style="red on black", style="on black")
             console.print(panel)
         else:
-            console.print(f"{Fore.GREEN}✅ No obvious vulnerabilities detected on {target}")
+            console.print(f"{Back.BLACK}{Fore.GREEN}[+] No obvious vulnerabilities detected on {target}")
     
     def save_scan_results(self, target, results):
         """Save scan results to file"""
@@ -495,15 +500,15 @@ class NetworkScanner:
         try:
             with open(filename, 'w') as f:
                 json.dump(scan_data, f, indent=2)
-            console.print(f"\n{Fore.GREEN}💾 Results saved to: {filename}")
+            console.print(f"\n{Back.BLACK}{Fore.GREEN}[+] Results saved to: {filename}")
         except Exception as e:
-            console.print(f"{Fore.RED}❌ Failed to save results: {e}")
+            console.print(f"{Back.BLACK}{Fore.RED}[-] Failed to save results: {e}")
     
     def show_menu(self):
         """Display network scanner menu"""
         while True:
-            console.print(f"\n{Fore.CYAN}{Style.BRIGHT}🌐 NETWORK SCANNING MODULE")
-            console.print("=" * 50)
+            console.print(f"\n{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}🌐 NETWORK SCANNING MODULE")
+            console.print(f"{Back.BLACK}{Fore.GREEN}" + "=" * 50)
             
             options = [
                 ("1", "🔍 Network Discovery", "Discover hosts on local network"),
@@ -541,26 +546,26 @@ class NetworkScanner:
                 elif choice == "0":
                     break
                 else:
-                    console.print(f"{Fore.RED}❌ Invalid option!")
+                    console.print(f"{Back.BLACK}{Fore.RED}[-] Invalid option!")
                 
                 if choice != "0":
-                    input(f"\n{Fore.WHITE}Press Enter to continue...")
+                    input(f"\n{Back.BLACK}{Fore.GREEN}[*] Press Enter to continue...")
                     
             except KeyboardInterrupt:
-                console.print(f"\n{Fore.YELLOW}Returning to main menu...")
+                console.print(f"\n{Back.BLACK}{Fore.YELLOW}[!] Returning to main menu...")
                 break
     
     def show_network_interfaces(self):
         """Display detailed network interface information"""
-        console.print(f"\n{Fore.CYAN}{Style.BRIGHT}📡 Network Interface Information")
-        console.print("=" * 60)
+        console.print(f"\n{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}📡 Network Interface Information")
+        console.print(f"{Back.BLACK}{Fore.GREEN}" + "=" * 60)
         
         interfaces = self.get_network_interfaces()
         
         for i, iface in enumerate(interfaces, 1):
-            interface_info = Table(show_header=False, border_style="bright_cyan")
-            interface_info.add_column("Property", style="bright_yellow", justify="right")
-            interface_info.add_column("Value", style="bright_white")
+            interface_info = Table(show_header=False, border_style="green on black", style="on black")
+            interface_info.add_column("Property", style="green on black", justify="right")
+            interface_info.add_column("Value", style="bright_green on black")
             
             interface_info.add_row("Interface", iface['interface'])
             interface_info.add_row("IP Address", iface['ip'])
@@ -573,7 +578,7 @@ class NetworkScanner:
                 if network_range:
                     interface_info.add_row("Network Range", network_range)
             
-            panel = Panel(interface_info, title=f"[bright_green]Interface {i}: {iface['interface']}[/bright_green]", border_style="green")
+            panel = Panel(interface_info, title=f"[green on black]Interface {i}: {iface['interface']}[/green on black]", border_style="green on black", style="on black")
             console.print(panel)
 
 def main():

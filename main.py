@@ -26,6 +26,7 @@ class BlackDeD:
     def __init__(self):
         self.version = "1.0.0"
         self.author = "BlackDeD Security Team"
+        self.dependencies_checked = False
         self.clear_screen()
         
     def clear_screen(self):
@@ -95,6 +96,49 @@ class BlackDeD:
         
         console.print(panel)
         print()
+    
+    def check_dependencies(self):
+        """Check for required dependencies and tools"""
+        if self.dependencies_checked:
+            return True
+        
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Checking system dependencies...")
+        missing_deps = []
+        
+        # Check Python packages
+        required_packages = {
+            'nmap': 'python-nmap',
+            'scapy': 'scapy', 
+            'paramiko': 'paramiko',
+            'cryptography': 'cryptography',
+            'netifaces': 'netifaces',
+            'psutil': 'psutil'
+        }
+        
+        for pkg, pip_name in required_packages.items():
+            try:
+                __import__(pkg)
+            except ImportError:
+                missing_deps.append(f"Python package: {pip_name}")
+        
+        # Check for nmap binary
+        import subprocess
+        import shutil
+        if not shutil.which('nmap'):
+            missing_deps.append("Nmap binary (install with: apt install nmap)")
+        
+        if missing_deps:
+            print(f"{Back.BLACK}{Fore.YELLOW}[!] Missing dependencies detected:")
+            for dep in missing_deps:
+                print(f"{Back.BLACK}{Fore.YELLOW}  - {dep}")
+            print(f"{Back.BLACK}{Fore.YELLOW}[!] Some features may not work without these dependencies.")
+            print(f"{Back.BLACK}{Fore.GREEN}[*] Install missing packages and restart BlackDeD for full functionality.")
+        else:
+            print(f"{Back.BLACK}{Fore.GREEN}[+] All dependencies are available!")
+        
+        self.dependencies_checked = True
+        time.sleep(2)
+        return len(missing_deps) == 0
         
     def show_main_menu(self):
         """Display the main menu with all available tools"""
@@ -138,11 +182,11 @@ class BlackDeD:
         
         while time.time() < end_time:
             for char in chars:
-                sys.stdout.write(f"\r{Fore.CYAN}{Style.BRIGHT}{char} {text}...")
+                sys.stdout.write(f"\r{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}{char} {text}...")
                 sys.stdout.flush()
                 time.sleep(0.1)
         
-        sys.stdout.write(f"\r{Fore.GREEN}{Style.BRIGHT}✓ {text} Complete!   \n")
+        sys.stdout.write(f"\r{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}✓ {text} Complete!   \n")
         
     def display_warning(self):
         """Display ethical usage warning"""
@@ -209,7 +253,7 @@ By continuing, you acknowledge that you will use this tool ethically and legally
         elif choice == "0":
             self.exit_application()
         else:
-            print(f"{Fore.RED}{Style.BRIGHT}Invalid option! Please select a valid menu option.")
+            print(f"{Back.BLACK}{Fore.RED}{Style.BRIGHT}[-] Invalid option! Please select a valid menu option.")
             time.sleep(1)
     
     def network_scanning_menu(self):
@@ -219,85 +263,88 @@ By continuing, you acknowledge that you will use this tool ethically and legally
             scanner = NetworkScanner()
             scanner.show_menu()
         except ImportError as e:
-            print(f"{Fore.RED}{Style.BRIGHT}❌ Network scanner module not available: {e}")
-            input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+            print(f"{Back.BLACK}{Fore.RED}{Style.BRIGHT}[-] Network scanner module not available: {e}")
+            input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         except Exception as e:
-            print(f"{Fore.RED}{Style.BRIGHT}❌ Error loading network scanner: {e}")
-            input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+            print(f"{Back.BLACK}{Fore.RED}{Style.BRIGHT}[-] Error loading network scanner: {e}")
+            input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def web_security_menu(self):
         """Web application security tools submenu"""
-        print(f"{Fore.CYAN}{Style.BRIGHT}\n🕸️ Web Application Security Module")
-        print(f"{Fore.YELLOW}Coming soon in the next update!")
-        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n🕸️ Web Application Security Module")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
+        input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def wireless_security_menu(self):
         """Wireless security tools submenu"""
-        print(f"{Fore.CYAN}{Style.BRIGHT}\n📡 Wireless Security Tools Module")
-        print(f"{Fore.YELLOW}Coming soon in the next update!")
-        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n📡 Wireless Security Tools Module")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
+        input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def social_engineering_menu(self):
         """Social engineering tools submenu"""
-        print(f"{Fore.CYAN}{Style.BRIGHT}\n🎭 Social Engineering Toolkit Module")
-        print(f"{Fore.YELLOW}Coming soon in the next update!")
-        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n🎭 Social Engineering Toolkit Module")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
+        input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def crypto_tools_menu(self):
         """Cryptography and password tools submenu"""
-        print(f"{Fore.CYAN}{Style.BRIGHT}\n🔒 Cryptography & Password Tools Module")
-        print(f"{Fore.YELLOW}Coming soon in the next update!")
-        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n🔒 Cryptography & Password Tools Module")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
+        input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def system_info_menu(self):
         """System information gathering submenu"""
-        print(f"{Fore.CYAN}{Style.BRIGHT}\n💻 System Information Gathering Module")
-        print(f"{Fore.YELLOW}Coming soon in the next update!")
-        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n💻 System Information Gathering Module")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
+        input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def reconnaissance_menu(self):
         """Advanced reconnaissance submenu"""
-        print(f"{Fore.CYAN}{Style.BRIGHT}\n🔍 Advanced Reconnaissance Module")
-        print(f"{Fore.YELLOW}Coming soon in the next update!")
-        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n🔍 Advanced Reconnaissance Module")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
+        input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def security_assessment_menu(self):
         """Security assessment tools submenu"""
-        print(f"{Fore.CYAN}{Style.BRIGHT}\n🛡️ Security Assessment Tools Module")
-        print(f"{Fore.YELLOW}Coming soon in the next update!")
-        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n🛡️ Security Assessment Tools Module")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
+        input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def settings_menu(self):
         """Settings and configuration submenu"""
-        print(f"{Fore.CYAN}{Style.BRIGHT}\n⚙️ Configuration & Settings Module")
-        print(f"{Fore.YELLOW}Coming soon in the next update!")
-        input(f"{Fore.WHITE}\nPress Enter to return to main menu...")
+        print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n⚙️ Configuration & Settings Module")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
+        input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def exit_application(self):
         """Exit the application gracefully"""
         self.clear_screen()
         
         exit_banner = f"""
-{Fore.RED}{Style.BRIGHT}
+{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}
 ╔══════════════════════════════════════════════════════════════════╗
 ║                                                                  ║
-║  {Fore.YELLOW}{Style.BRIGHT}Thank you for using BlackDeD Ethical Hacking Toolkit!{Fore.RED}{Style.BRIGHT}        ║
+║  {Back.BLACK}{Fore.GREEN}{Style.BRIGHT}Thank you for using BlackDeD Ethical Hacking Toolkit!{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}        ║
 ║                                                                  ║
-║  {Fore.GREEN}{Style.BRIGHT}Remember: Use your skills responsibly and ethically{Fore.RED}{Style.BRIGHT}            ║
-║  {Fore.CYAN}{Style.BRIGHT}Stay updated with the latest security practices{Fore.RED}{Style.BRIGHT}                ║
+║  {Back.BLACK}{Fore.GREEN}{Style.BRIGHT}Remember: Use your skills responsibly and ethically{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}            ║
+║  {Back.BLACK}{Fore.GREEN}{Style.BRIGHT}Stay updated with the latest security practices{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}                ║
 ║                                                                  ║
-║  {Fore.MAGENTA}{Style.BRIGHT}Visit our GitHub for updates and new modules{Fore.RED}{Style.BRIGHT}                 ║
+║  {Back.BLACK}{Fore.GREEN}{Style.BRIGHT}Visit our GitHub for updates and new modules{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}                 ║
 ║                                                                  ║
 ╚══════════════════════════════════════════════════════════════════╝
 """
         print(exit_banner)
-        print(f"{Fore.WHITE}{Style.BRIGHT}Goodbye! 👋")
+        print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}Goodbye! 👋")
         sys.exit(0)
         
     def run(self):
         """Main application loop"""
         # Show warning first
         self.display_warning()
+        
+        # Check dependencies first
+        self.check_dependencies()
         
         # Show loading animation
         self.show_loading_animation("Initializing BlackDeD", 3)
