@@ -271,50 +271,82 @@ By continuing, you acknowledge that you will use this tool ethically and legally
         
     def web_security_menu(self):
         """Web application security tools submenu"""
-        print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n🕸️ Web Application Security Module")
-        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
-        input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
+        try:
+            from web_scanner import WebScanner
+            scanner = WebScanner()
+            scanner.show_menu()
+        except ImportError as e:
+            print(f"{Back.BLACK}{Fore.RED}{Style.BRIGHT}[-] Web scanner module not available: {e}")
+            input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
+        except Exception as e:
+            print(f"{Back.BLACK}{Fore.RED}{Style.BRIGHT}[-] Error loading web scanner: {e}")
+            input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def wireless_security_menu(self):
         """Wireless security tools submenu"""
         print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n📡 Wireless Security Tools Module")
-        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Advanced WiFi tools coming in the next update!")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Features: WiFi scanning, WPS testing, packet capture")
         input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def social_engineering_menu(self):
         """Social engineering tools submenu"""
-        print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n🎭 Social Engineering Toolkit Module")
-        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
-        input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
+        try:
+            from osint_tools import OSINTTools
+            osint = OSINTTools()
+            osint.show_menu()
+        except ImportError as e:
+            print(f"{Back.BLACK}{Fore.RED}{Style.BRIGHT}[-] OSINT module not available: {e}")
+            input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
+        except Exception as e:
+            print(f"{Back.BLACK}{Fore.RED}{Style.BRIGHT}[-] Error loading OSINT tools: {e}")
+            input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def crypto_tools_menu(self):
         """Cryptography and password tools submenu"""
-        print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n🔒 Cryptography & Password Tools Module")
-        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
-        input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
+        try:
+            from crypto_tools import CryptoTools
+            crypto = CryptoTools()
+            crypto.show_menu()
+        except ImportError as e:
+            print(f"{Back.BLACK}{Fore.RED}{Style.BRIGHT}[-] Crypto tools module not available: {e}")
+            input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
+        except Exception as e:
+            print(f"{Back.BLACK}{Fore.RED}{Style.BRIGHT}[-] Error loading crypto tools: {e}")
+            input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def system_info_menu(self):
         """System information gathering submenu"""
         print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n💻 System Information Gathering Module")
-        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Advanced system profiling coming in the next update!")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Features: OS fingerprinting, service enumeration, process analysis")
         input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def reconnaissance_menu(self):
         """Advanced reconnaissance submenu"""
-        print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n🔍 Advanced Reconnaissance Module")
-        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
-        input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
+        try:
+            from osint_tools import OSINTTools
+            osint = OSINTTools()
+            osint.show_menu()
+        except ImportError as e:
+            print(f"{Back.BLACK}{Fore.RED}{Style.BRIGHT}[-] OSINT module not available: {e}")
+            input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
+        except Exception as e:
+            print(f"{Back.BLACK}{Fore.RED}{Style.BRIGHT}[-] Error loading OSINT tools: {e}")
+            input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def security_assessment_menu(self):
         """Security assessment tools submenu"""
         print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n🛡️ Security Assessment Tools Module")
-        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Vulnerability assessment framework coming soon!")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Features: CVE lookup, exploit verification, security scoring")
         input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def settings_menu(self):
         """Settings and configuration submenu"""
         print(f"{Back.BLACK}{Fore.GREEN}{Style.BRIGHT}\n⚙️ Configuration & Settings Module")
-        print(f"{Back.BLACK}{Fore.GREEN}[*] Coming soon in the next update!")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Configuration management coming soon!")
+        print(f"{Back.BLACK}{Fore.GREEN}[*] Features: API key management, scan profiles, output formats")
         input(f"{Back.BLACK}{Fore.GREEN}[*] Press Enter to return to main menu...")
         
     def exit_application(self):
