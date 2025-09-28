@@ -19,7 +19,7 @@ deploymentTarget = "cloudrun"
 expertMode = true
 
 [workflows]
-runButton = "Project"
+runButton = "BlackDeD Startup"
 
 [[workflows.workflow]]
 name = "Project"
@@ -40,3 +40,12 @@ args = "python main.py"
 
 [workflows.workflow.metadata]
 outputType = "console"
+
+[[workflows.workflow]]
+name = "BlackDeD Startup"
+author = 48048829
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "./start.sh"
